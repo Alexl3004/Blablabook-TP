@@ -40,6 +40,9 @@
 </section>
 
 <style>
+  section {
+    min-height: 80vh;
+  }
   h2 {
     margin: 1em 1em 0 1em;
   }

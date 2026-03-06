@@ -3,44 +3,71 @@
 
 <main>
   <div class="error-container">
-    <h1>404 - Page Non Trouvée</h1>
+    <div class="error-code">404</div>
+    <h1>Page non trouvée</h1>
     <p>La page que vous recherchez n'existe pas.</p>
     <a href="/" class="home-link">Retour à l'accueil</a>
   </div>
 </main>
 
 <style>
+  main {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
   .error-container {
     text-align: center;
-    padding: 2rem;
-    max-width: 600px;
-    margin: 0 auto;
+    max-width: 500px;
+    background: var(--color-white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 3rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .error-code {
+    font-size: 5rem;
+    font-family: var(--font-primary);
+    color: var(--color-secondary);
+    line-height: 1;
+    opacity: 0.8;
   }
 
   h1 {
-    color: var(--color-text);
     font-size: var(--font-size-lg);
-    margin-bottom: 1rem;
+    margin: 0;
   }
 
   p {
-    color: var(--color-text);
     font-size: var(--font-size-base);
-    margin-bottom: 2rem;
+    margin: 0;
+    opacity: 0.75;
   }
 
   .home-link {
     display: inline-block;
     background: var(--color-secondary);
-    color: var(--color-bg);
-    padding: 0.5rem 1rem;
+    color: var(--color-text);
+    padding: 0.5rem 1.25rem;
     border-radius: var(--radius);
     text-decoration: none;
     box-shadow: var(--shadow-btn);
-    transition: box-shadow 0.2s;
+    font-weight: 600;
+    margin-top: 0.5rem;
+    transition:
+      box-shadow 0.15s ease,
+      transform 0.15s ease;
   }
 
   .home-link:hover {
     box-shadow: var(--shadow-btn-hover);
+    transform: translateY(-1px);
   }
 </style>

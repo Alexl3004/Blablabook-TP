@@ -1,27 +1,20 @@
 <script>
-  // Import des hooks Svelte
-  import { onMount } from 'svelte';
-  // Import du composant Header
-  import Header from './Header.svelte';
+  import { onMount } from "svelte";
+  import Header from "./Header.svelte";
 
-  // Variable pour stocker l'erreur
   let error = null;
 
-  // Fonction pour gérer les erreurs
   const handleError = (event) => {
     error = event.error;
   };
 
-  // Lifecycle hook - s'exécute au montage du composant
   onMount(() => {
-    // Ajout des écouteurs d'événements pour les erreurs
-    window.addEventListener('error', handleError);
-    window.addEventListener('unhandledrejection', handleError);
+    window.addEventListener("error", handleError);
+    window.addEventListener("unhandledrejection", handleError);
 
-    // Nettoyage lors du démontage du composant
     return () => {
-      window.removeEventListener('error', handleError);
-      window.removeEventListener('unhandledrejection', handleError);
+      window.removeEventListener("error", handleError);
+      window.removeEventListener("unhandledrejection", handleError);
     };
   });
 </script>
@@ -31,9 +24,10 @@
 
   <main>
     <div class="error-container">
-      <h1>500 - Erreur Interne du Serveur</h1>
+      <div class="error-code">500</div>
+      <h1>Erreur interne du serveur</h1>
       <p>Une erreur est survenue. Veuillez réessayer plus tard.</p>
-      <button on:click={() => window.location.reload()} class="retry-btn">Réessayer</button>
+      <button onclick={() => window.location.reload()}>Réessayer</button>
     </div>
   </main>
 {:else}
@@ -41,37 +35,47 @@
 {/if}
 
 <style>
+  main {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
   .error-container {
     text-align: center;
-    padding: 2rem;
-    max-width: 600px;
-    margin: 0 auto;
+    max-width: 500px;
+    background: var(--color-white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 3rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .error-code {
+    font-size: 5rem;
+    font-family: var(--font-primary);
+    color: var(--color-secondary);
+    line-height: 1;
+    opacity: 0.8;
   }
 
   h1 {
-    color: var(--color-text);
     font-size: var(--font-size-lg);
-    margin-bottom: 1rem;
+    margin: 0;
   }
 
   p {
-    color: var(--color-text);
     font-size: var(--font-size-base);
-    margin-bottom: 2rem;
+    margin: 0;
+    opacity: 0.75;
   }
 
-  .retry-btn {
-    background: var(--color-secondary);
-    color: var(--color-bg);
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: var(--radius);
-    cursor: pointer;
-    box-shadow: var(--shadow-btn);
-    transition: box-shadow 0.2s;
-  }
-
-  .retry-btn:hover {
-    box-shadow: var(--shadow-btn-hover);
+  button {
+    margin-top: 0.5rem;
   }
 </style>

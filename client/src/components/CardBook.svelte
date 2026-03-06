@@ -1,145 +1,170 @@
 <script>
-// Récupère le livre passé en propriété
   let { book } = $props();
-  // Indique si l'image est chargée
   let isLoaded = $state(false);
 </script>
 
-<article class="card">
-<!-- Lien vers la page détail du livre -->
-  <a href="/livre/{book.id}">
-    <figure>
-      <div class="image-container">
-      <!-- Affiche un skeleton pendant le chargement de l'image -->
-        {#if !isLoaded}
-          <div class="skeleton"></div>
-        {/if}
+<article class="book-card">
+  <a href="/livre/{book.id}" class="card-link">
+    <div class="image-wrapper">
+      {#if !isLoaded}
+        <div class="skeleton"></div>
+      {/if}
 
-        <img
-          src={book.cover}
-          alt={book.title}
-          loading="lazy"
-          decoding="async"
-          class:hidden={!isLoaded}
-          onload={() => (isLoaded = true)}
-          onerror={() => {
-            isLoaded = false;
-          }}
-        />
-      </div>
+      <img
+        src={book.cover}
+        alt={book.title}
+        loading="lazy"
+        decoding="async"
+        class:loaded={isLoaded}
+        onload={() => (isLoaded = true)}
+        onerror={() => {
+          isLoaded = false;
+        }}
+      />
 
-      <figcaption class="content">
-        <h3>{book.title}</h3>
-        <p>Auteur: {book.author}</p>
-        <p>Année: {book.publish_year}</p>
-      </figcaption>
-    </figure>
+      {#if book.publish_year}
+        <span class="year-badge">{book.publish_year}</span>
+      {/if}
+    </div>
+
+    <div class="card-content">
+      <h3 title={book.title}>{book.title}</h3>
+      <p class="author"><span>par</span> {book.author}</p>
+    </div>
   </a>
 </article>
 
 <style>
-  .card {
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.332);
-    width: 100%;
+  .book-card {
+    background: var(--color-white);
+    border-radius: 16px;
+    border: 1px solid rgba(233, 228, 219, 0.08);
     overflow: hidden;
-    transition: transform 0.2s;
-    margin: 0 auto;
+    height: 100%;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   }
 
-  .card:hover {
-    transform: scale(1.03);
+  .book-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--color-secondary);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
   }
 
-  .card a {
-    text-decoration: none;
-    color: inherit;
-    display: block;
-  }
-
-  figure {
-    margin: 0;
-    padding: 0;
+  .card-link {
     display: flex;
     flex-direction: column;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
   }
 
-  .image-container {
+  .image-wrapper {
+    position: relative;
     width: 100%;
     aspect-ratio: 2 / 3;
-    position: relative;
     overflow: hidden;
+    background: var(--color-bg);
   }
 
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: top;
-    display: block;
-    transition: opacity 0.3s ease;
+    opacity: 0;
+    transition:
+      opacity 0.4s ease,
+      transform 0.6s ease;
   }
 
-  .hidden {
-    opacity: 0;
+  img.loaded {
+    opacity: 1;
+  }
+
+  .book-card:hover img {
+    transform: scale(1.05);
+  }
+
+  .year-badge {
     position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--color-text);
+    z-index: 2;
+  }
+
+  /* --- CONTENU COMPACT --- */
+  .card-content {
+    padding: 0.8rem 0.75rem 0.6rem; /* Padding réduit en bas (0.6rem) */
+    display: flex;
+    flex-direction: column;
+    gap: 2px; /* Espace minimal entre titre et auteur */
+  }
+
+  h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text);
+    /* Forcer une seule ligne avec points de suspension */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+  }
+
+  .author {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--color-text);
+    opacity: 0.7;
+    /* Forcer une seule ligne */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+  }
+
+  .author span {
+    font-size: 0.75rem;
+    font-style: italic;
+    opacity: 0.5;
   }
 
   .skeleton {
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.05),
+      transparent
+    );
     background-size: 200% 100%;
     animation: shimmer 1.5s infinite;
   }
 
   @keyframes shimmer {
-    0% {
-      background-position: 200% 0;
-    }
     100% {
       background-position: -200% 0;
     }
   }
 
-  .content {
-    padding: 0.75rem;
-    text-align: center;
-  }
-
-  h3 {
-    margin: 0 0 6px 0;
-    font-size: 1.2rem;
-    color: var(--color-text);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    width: 100%;
-    display: block;
-    margin-bottom: 5px;
-  }
-
-  p {
-    margin: 2px 0;
-    font-size: 1rem;
-    color: #666;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
   @media (max-width: 480px) {
-    .content {
-      padding: 0.4rem 0.35rem;
+    .card-content {
+      padding: 0.5rem;
     }
-
     h3 {
-      font-size: 0.75rem;
-      margin-bottom: 3px;
+      font-size: 0.9rem;
     }
-
-    p {
-      font-size: 0.65rem;
+    .author {
+      font-size: 0.75rem;
     }
   }
 </style>

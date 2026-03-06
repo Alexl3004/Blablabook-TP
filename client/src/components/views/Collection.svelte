@@ -1,8 +1,8 @@
 <script>
+  /* On garde ton script tel quel, il fonctionne parfaitement avec Svelte 5 */
   import { api } from "../../service/api.service.js";
   import CardBook from "../CardBook.svelte";
 
-  // États Svelte 5
   let books = $state([]);
   let loading = $state(true);
   let currentFilter = $state("tous");
@@ -11,7 +11,6 @@
   let requestVersion = $state(0);
   let notAuthenticated = $state(false);
 
-  // Liste des filtres
   const filters = [
     { value: "tous", label: "Tous" },
     { value: "à lire", label: "À lire" },
@@ -21,48 +20,35 @@
     { value: "abandonné", label: "Abandonné" },
   ];
 
-  // Chargement au montage et au changement de filtre
   $effect(() => {
     loadCollection();
   });
 
   async function loadCollection() {
     const currentVersion = requestVersion;
-
     try {
       loading = true;
-
       const token = localStorage.getItem("token");
       if (!token) {
         notAuthenticated = true;
         return;
       }
-
       const statusParam = currentFilter === "tous" ? null : currentFilter;
       const data = await api.getCollection(statusParam);
-
-      // Ignorer la réponse si une requête plus récente a été initiée
       if (requestVersion !== currentVersion) return;
-
       books = data.books || [];
     } catch (error) {
-      // Ignorer les erreurs si une requête plus récente a été initiée
       if (requestVersion !== currentVersion) return;
-
-      if (error.status === 401) {
-        notAuthenticated = true;
-      } else {
-        showToast("Erreur lors du chargement de la collection", "error");
-      }
+      if (error.status === 401) notAuthenticated = true;
+      else showToast("Erreur de chargement", "error");
     } finally {
-      // Ignorer si une requête plus récente a été initiée
       if (requestVersion !== currentVersion) return;
       loading = false;
     }
   }
 
   function handleFilterChange(filterValue) {
-    requestVersion++; // Incrémenter pour abandonner les requêtes précédentes
+    requestVersion++;
     currentFilter = filterValue;
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -70,38 +56,30 @@
   async function handleStatusChange(bookId, newStatus) {
     try {
       await api.updateCollectionStatus(bookId, newStatus);
-
-      // Mise à jour locale
       const bookIndex = books.findIndex((b) => b.id === bookId);
       if (bookIndex !== -1) {
         books[bookIndex].collectStatus = newStatus;
-        books = [...books]; // Trigger reactivity
+        books = [...books];
       }
-
       showToast("Statut mis à jour", "success");
     } catch (error) {
-      showToast("Erreur lors de la mise à jour du statut", "error");
+      showToast("Erreur de mise à jour", "error");
     }
   }
 
   async function handleRemove(bookId) {
     try {
       await api.removeFromCollection(bookId);
-
-      // Suppression locale
       books = books.filter((b) => b.id !== bookId);
-
-      showToast("Livre retiré de la collection", "success");
+      showToast("Livre retiré", "success");
     } catch (error) {
-      showToast("Erreur lors de la suppression", "error");
+      showToast("Erreur de suppression", "error");
     }
   }
 
   function showToast(message, type) {
     if (toastTimeout) clearTimeout(toastTimeout);
-
     toast = { message, type };
-
     toastTimeout = setTimeout(() => {
       toast = null;
     }, 3000);
@@ -109,42 +87,22 @@
 </script>
 
 <section aria-labelledby="collection-title">
-  <h2 id="collection-title">Ma collection</h2>
+  <div class="title-container">
+    <h2 id="collection-title">Ma collection</h2>
+  </div>
 
   {#if notAuthenticated}
     <div class="not-authenticated" role="alert">
-      <svg
-        width="52"
-        height="52"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="1.4"
-      >
-        <circle cx="12" cy="8" r="4" />
-        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
-        <circle
-          cx="18"
-          cy="5"
-          r="3"
-          fill="white"
-          stroke="currentColor"
-          stroke-width="1.4"
-        />
-        <line x1="16.8" y1="3.8" x2="19.2" y2="6.2" stroke-width="1.6" />
-        <line x1="19.2" y1="3.8" x2="16.8" y2="6.2" stroke-width="1.6" />
-      </svg>
+      <div class="auth-icon">👤</div>
       <h3>Accès restreint</h3>
-      <p>Vous devez être connecté pour accéder à votre collection.</p>
+      <p>Connectez-vous pour gérer votre bibliothèque.</p>
     </div>
   {:else}
-    <!-- Filtres -->
-    <div class="filters" role="group" aria-label="Filtrer par statut">
+    <div class="filters">
       {#each filters as filter}
         <button
           class="filter-btn"
           class:active={currentFilter === filter.value}
-          aria-pressed={currentFilter === filter.value}
           onclick={() => handleFilterChange(filter.value)}
         >
           {filter.label}
@@ -152,18 +110,13 @@
       {/each}
     </div>
 
-    <!-- Chargement -->
     {#if loading}
-      <p class="loading" aria-busy="true">Chargement...</p>
-
-      <!-- Collection vide -->
+      <div class="status-message">Chargement de vos livres...</div>
     {:else if books.length === 0}
-      <div class="empty">
-        <p>Votre collection est vide</p>
-        <a href="/livres" class="link">Parcourir le catalogue</a>
+      <div class="empty-state">
+        <p>Aucun livre dans cette catégorie.</p>
+        <a href="/livres" class="browse-link">Explorer le catalogue</a>
       </div>
-
-      <!-- Liste des livres -->
     {:else}
       <div class="grid">
         {#each books as book (book.id)}
@@ -175,19 +128,14 @@
                 value={book.collectStatus}
                 onchange={(e) =>
                   handleStatusChange(book.id, e.currentTarget.value)}
-                aria-label="Changer le statut"
               >
                 <option value="à lire">À lire</option>
                 <option value="en cours">En cours</option>
                 <option value="lu">Lu</option>
-                <option value="abandonné">Abandonné</option>
                 <option value="en pause">En pause</option>
+                <option value="abandonné">Abandonné</option>
               </select>
-              <button
-                class="remove-btn"
-                onclick={() => handleRemove(book.id)}
-                aria-label="Retirer de la collection"
-              >
+              <button class="remove-btn" onclick={() => handleRemove(book.id)}>
                 Retirer
               </button>
             </div>
@@ -198,166 +146,118 @@
   {/if}
 </section>
 
-<!-- Toast notification -->
 {#if toast}
-  <div
-    class="toast"
-    class:success={toast.type === "success"}
-    class:error={toast.type === "error"}
-    role="alert"
-    aria-live="polite"
-  >
+  <div class="toast {toast.type}" role="alert">
     {toast.message}
   </div>
 {/if}
 
 <style>
-  h2 {
-    text-align: center;
-    margin: 1rem 0;
-    font-size: 1.75rem;
-    color: var(--color-text);
+  section {
+    min-height: 80vh;
+    padding-bottom: 4rem;
   }
 
-  .not-authenticated {
+  .title-container {
     display: flex;
-    flex-direction: column;
-    align-items: center;
     justify-content: center;
-    gap: 0.75rem;
-    padding: 3rem 1.5rem;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    text-align: center;
-  }
-  .not-authenticated svg {
-    opacity: 0.4;
-  }
-  .not-authenticated h3 {
-    margin: 0;
-    font-size: 1.1rem;
-  }
-  .not-authenticated p {
-    margin: 0;
-    opacity: 0.7;
+    margin: 2rem 0;
   }
 
-  /* Filtres */
+  h2 {
+    font-size: 2rem;
+    background: var(--color-white);
+    padding: 0.8rem 2.5rem;
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(233, 228, 219, 0.05);
+  }
+
+  /* --- Filtres Style Glassmorphism --- */
   .filters {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 0.5rem;
-    margin-bottom: 1.5rem;
+    gap: 0.75rem;
+    margin-bottom: 3rem;
+    padding: 0 1rem;
   }
 
   .filter-btn {
-    padding: 0.6rem 1rem;
-    border-radius: var(--radius);
-    border: 2px solid var(--color-secondary);
-    background: transparent;
+    padding: 0.6rem 1.2rem;
+    border-radius: 50px;
+    border: 1px solid var(--color-border);
+    background: var(--color-white);
     color: var(--color-text);
-    font-family: var(--font-primary);
     font-size: 0.9rem;
+    font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s;
-    min-height: 44px;
+    transition: all 0.3s ease;
   }
 
   .filter-btn:hover {
-    background: var(--color-secondary);
+    border-color: var(--color-secondary);
+    transform: translateY(-2px);
   }
 
   .filter-btn.active {
     background: var(--color-secondary);
-    font-weight: bold;
+    border-color: var(--color-secondary);
+    color: var(--color-text);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   }
 
-  /* Chargement */
-  .loading {
-    text-align: center;
-    padding: 2rem;
-    font-size: 1.1rem;
-  }
-
-  /* Collection vide */
-  .empty {
-    text-align: center;
-    padding: 3rem 1rem;
-  }
-
-  .empty p {
-    font-size: 1.1rem;
-    margin-bottom: 1rem;
-  }
-
-  .link {
-    color: var(--color-secondary);
-    text-decoration: underline;
-    font-weight: 600;
-  }
-
-  /* Grille */
+  /* --- Grille Harmonisante --- */
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    max-width: 1400px;
-    margin: 20px auto;
-    gap: 1em 0.5em;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    max-width: 1200px;
+    margin: 0 auto;
+    gap: 2.5rem 1.2rem; /* Plus d'espace vertical pour les actions */
     padding: 0 20px;
   }
 
   .card-wrapper {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-    width: 100%;
+    height: 100%;
+    gap: 0.75rem;
   }
 
-  .card-wrapper :global(a),
-  .card-wrapper :global(.card) {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-  }
-
+  /* Actions sous la carte */
   .card-actions {
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
-    padding: 0.5rem;
-    background: white;
-    border-radius: var(--radius);
+    gap: 0.5rem;
+    padding: 0.8rem;
+    background: var(--color-white);
+    border-radius: 12px;
+    border: 1px solid rgba(233, 228, 219, 0.1);
     box-shadow: var(--shadow);
   }
 
   .status-select {
+    width: 100%;
     padding: 0.5rem;
-    border-radius: var(--radius);
-    border: 1px solid #ddd;
-    background: white;
-    font-family: var(--font-primary);
-    font-size: 0.85rem;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    background: var(--color-bg);
     color: var(--color-text);
+    font-size: 0.85rem;
     cursor: pointer;
-  }
-
-  .status-select:focus {
-    outline: none;
-    border-color: var(--color-secondary);
   }
 
   .remove-btn {
-    padding: 0.4rem 0.8rem;
-    border-radius: var(--radius);
-    border: 1px solid #dc3545;
-    background: transparent;
-    color: #dc3545;
-    font-family: var(--font-primary);
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    background: rgba(220, 53, 69, 0.1);
+    color: #ff6b6b;
     font-size: 0.8rem;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
-    min-height: 36px;
   }
 
   .remove-btn:hover {
@@ -365,47 +265,66 @@
     color: white;
   }
 
-  /* Toast */
+  /* --- États & Toasts --- */
+  .status-message,
+  .empty-state {
+    text-align: center;
+    padding: 4rem 1rem;
+    opacity: 0.8;
+  }
+
+  .browse-link {
+    display: inline-block;
+    margin-top: 1rem;
+    color: var(--color-secondary);
+    font-weight: 700;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    transition: 0.3s;
+  }
+
+  .browse-link:hover {
+    border-bottom-color: var(--color-secondary);
+  }
+
   .toast {
     position: fixed;
-    top: 80px;
+    bottom: 30px;
     left: 50%;
     transform: translateX(-50%);
-    padding: 1rem 1.5rem;
-    border-radius: var(--radius);
-    font-family: var(--font-primary);
-    font-size: 0.95rem;
+    padding: 1rem 2rem;
+    border-radius: 50px;
     z-index: 1000;
-    animation: slideDown 0.3s ease;
+    font-weight: 600;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
 
   .toast.success {
-    background: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
+    background: #2ecc71;
+    color: white;
   }
-
   .toast.error {
-    background: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
+    background: #e74c3c;
+    color: white;
   }
 
-  @keyframes slideDown {
+  @keyframes slideUp {
     from {
+      transform: translateX(-50%) translateY(40px);
       opacity: 0;
-      transform: translateX(-50%) translateY(-10px);
     }
     to {
-      opacity: 1;
       transform: translateX(-50%) translateY(0);
+      opacity: 1;
     }
   }
 
+  /* --- Responsive --- */
   @media (max-width: 1500px) {
     .grid {
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      max-width: 1000px;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      max-width: 1100px;
     }
     .filter-btn {
       padding: 0.5rem 1rem;
@@ -416,7 +335,7 @@
 
   @media (max-width: 1000px) {
     .grid {
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
       max-width: 700px;
     }
     .status-select {

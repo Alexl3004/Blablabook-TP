@@ -3,7 +3,7 @@
 
   export let isLogin = true;
   export let onSuccess;
-// Des infomations pour connecter
+
   let email = "";
   let password = "";
   let name = "";
@@ -11,15 +11,14 @@
   let loading = false;
   let showPassword = false;
   let showConfirm = false;
-// État pour la notification (toast)
   let toast = null;
   let toastTimeout = null;
-// Vérifications de mot de passe réactives 
+
   $: hasMinLength = password.length >= 8;
   $: hasUppercase = /[A-Z]/.test(password);
   $: hasLowercase = /[a-z]/.test(password);
   $: hasDigit = /[0-9]/.test(password);
-// Affiche une notification temporaire (toast)
+
   function showToast(message, type) {
     if (toastTimeout) clearTimeout(toastTimeout);
     toast = { message, type };
@@ -27,7 +26,7 @@
       toast = null;
     }, 3000);
   }
-  // Message d'erreur
+
   const errorMessages = {
     Conflict: "Les informations saisies sont invalides.",
     Unauthorized: "Email ou mot de passe incorrect.",
@@ -43,7 +42,7 @@
     }
     return "Une erreur est survenue, veuillez réessayer.";
   }
-// Vérifivation de mots de pass
+
   function validatePassword(pwd) {
     if (pwd.length < 8)
       return "Le mot de passe doit contenir au moins 8 caractères.";
@@ -55,16 +54,13 @@
       return "Le mot de passe doit contenir au moins un chiffre.";
     return null;
   }
-// Pop-up pour login ou inscription
+
   async function handleSubmit() {
     loading = true;
-
     try {
       let response;
-// Pour connextion
       if (isLogin) {
         response = await api.login({ email, password });
-
         if (response?.token) {
           localStorage.setItem("token", response.token);
           if (onSuccess) onSuccess(response.token);
@@ -72,14 +68,11 @@
           window.location.href = "/";
         }
       } else {
-        // Pour inscription
         const pwdError = validatePassword(password);
         if (pwdError) throw new Error(pwdError);
         if (password !== confirm)
           throw new Error("Les mots de passe ne correspondent pas.");
-
         response = await api.register({ name, email, password, confirm });
-
         if (response?.id) {
           showToast("Compte créé ! Vous pouvez vous connecter.", "success");
           setTimeout(() => {
@@ -88,17 +81,16 @@
         }
       }
     } catch (err) {
-      // Notification d'erreur
       showToast(parseError(err.message), "error");
     } finally {
       loading = false;
     }
   }
 </script>
-<!-- Conteneur principal du formulaire d'authentification -->
+
 <div class="auth-container">
   <h2>{isLogin ? "Se connecter" : "Créer un compte"}</h2>
-<!-- Formulaire avec gestion de la soumission -->
+
   <form
     onsubmit={(e) => {
       e.preventDefault();
@@ -138,8 +130,6 @@
           bind:value={password}
           required
         />
-
-        <!-- L'icon d'oeil pour afficher le mot de pass -->
         <button
           type="button"
           class="toggle-eye"
@@ -181,23 +171,21 @@
               <circle cx="12" cy="12" r="3" />
             </svg>
           {/if}
-        </button> 
+        </button>
       </div>
-      <!-- Vérifivation des règles mots de pass(uniquement inscription) -->
+
       {#if !isLogin}
         <div class="password-rules">
-          <span class:valid={hasMinLength}>
-            {hasMinLength ? "✓" : "✗"} 8 caractères minimum
-          </span>
-          <span class:valid={hasUppercase}>
-            {hasUppercase ? "✓" : "✗"} Une majuscule
-          </span>
-          <span class:valid={hasLowercase}>
-            {hasLowercase ? "✓" : "✗"} Une minuscule
-          </span>
-          <span class:valid={hasDigit}>
-            {hasDigit ? "✓" : "✗"} Un chiffre
-          </span>
+          <span class:valid={hasMinLength}
+            >{hasMinLength ? "✓" : "✗"} 8 caractères minimum</span
+          >
+          <span class:valid={hasUppercase}
+            >{hasUppercase ? "✓" : "✗"} Une majuscule</span
+          >
+          <span class:valid={hasLowercase}
+            >{hasLowercase ? "✓" : "✗"} Une minuscule</span
+          >
+          <span class:valid={hasDigit}>{hasDigit ? "✓" : "✗"} Un chiffre</span>
         </div>
       {/if}
     </div>
@@ -212,7 +200,6 @@
             bind:value={confirm}
             required
           />
-<!-- L'icon d'oeil pour afficher le mot de pass -->
           <button
             type="button"
             class="toggle-eye"
@@ -263,7 +250,7 @@
       {loading ? "Chargement..." : isLogin ? "Connexion" : "S'inscrire"}
     </button>
   </form>
-<!-- Message après inscription et connexion-->
+
   {#if toast}
     <div
       class="toast"
@@ -281,7 +268,7 @@
   .auth-container h2 {
     margin-top: 0;
     text-align: center;
-    color: #1a1a1a;
+    font-size: var(--font-size-lg);
   }
 
   form {
@@ -297,21 +284,32 @@
   }
 
   label {
-    font-size: 0.9rem;
+    font-size: var(--font-size-sm);
     font-weight: 600;
   }
 
   input {
     padding: 0.75rem;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    font-size: var(--font-size-base);
+    background: var(--color-white);
+    color: var(--color-text);
+    width: 100%;
+    box-sizing: border-box;
+    transition:
+      border-color var(--transition-base),
+      box-shadow var(--transition-base);
+  }
+
+  input::placeholder {
+    opacity: 0.8;
   }
 
   input:focus {
     outline: none;
     border-color: var(--color-secondary);
-    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--focus-ring);
   }
 
   .input-wrapper {
@@ -321,7 +319,6 @@
   }
 
   .input-wrapper input {
-    width: 100%;
     padding-right: 2.5rem;
   }
 
@@ -333,48 +330,55 @@
     box-shadow: none;
     padding: 0;
     cursor: pointer;
-    color: #888;
+    color: var(--color-text);
+    opacity: 0.45;
     display: flex;
     align-items: center;
+    transition: opacity var(--transition-base);
   }
 
   .toggle-eye:hover {
-    color: var(--color-text);
+    opacity: 1;
     transform: scale(1.1);
     background: none;
     box-shadow: none;
   }
 
+  /* ── Règles mot de passe ── */
   .password-rules {
     display: flex;
     flex-direction: column;
     gap: 0.3rem;
-    font-size: 0.82rem;
+    font-size: var(--font-size-sm);
     margin-top: 0.25rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--color-surface);
+    border-radius: var(--radius);
   }
 
   .password-rules span {
-    color: #c62828;
-    transition: color 0.2s;
+    color: var(--color-error-text);
+    transition: color var(--transition-base);
   }
 
   .password-rules span.valid {
-    color: #2e7d32;
+    color: var(--color-success-text);
   }
 
+  /* ── Bouton submit ── */
   button[type="submit"] {
     border: none;
     padding: 0.8rem;
-    border-radius: 8px;
+    border-radius: var(--radius);
     font-weight: bold;
-    font-size: 1rem;
+    font-size: var(--font-size-base);
     cursor: pointer;
     background: var(--color-secondary);
     color: var(--color-text);
     box-shadow: var(--shadow-btn);
     transition:
-      box-shadow 0.15s ease,
-      transform 0.15s ease;
+      box-shadow var(--transition-base),
+      transform var(--transition-base);
   }
 
   button[type="submit"]:hover:not(:disabled) {
@@ -387,29 +391,31 @@
     cursor: not-allowed;
   }
 
+  /* ── Toast ── */
   .toast {
     margin-top: 1rem;
     padding: 0.75rem 1rem;
-    border-radius: 8px;
-    font-size: 0.9rem;
+    border-radius: var(--radius);
+    font-size: var(--font-size-sm);
     text-align: center;
   }
 
   .toast.success {
-    background: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
+    background: var(--color-success-bg);
+    color: var(--color-success-text);
+    border: 1px solid var(--color-success-border);
   }
 
   .toast.error {
-    background: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
+    background: var(--color-error-bg);
+    color: var(--color-error-text);
+    border: 1px solid var(--color-error-border);
   }
-/* ── Responsive ── */
+
+  /* ── Responsive ── */
   @media (max-width: 1100px) {
     .auth-container h2 {
-      font-size: 1.3rem;
+      font-size: var(--font-size-base);
     }
     label {
       font-size: 0.8rem;
@@ -423,9 +429,10 @@
       font-size: 0.9rem;
     }
   }
+
   @media (max-width: 700px) {
     .auth-container h2 {
-      font-size: 1.2rem;
+      font-size: var(--font-size-sm);
     }
     input {
       font-size: 0.8rem;
@@ -437,9 +444,6 @@
   }
 
   @media (max-width: 480px) {
-    .auth-container h2 {
-      font-size: 1.1rem;
-    }
     input {
       padding: 0.5rem;
       font-size: 0.8rem;

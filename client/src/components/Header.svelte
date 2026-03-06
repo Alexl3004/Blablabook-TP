@@ -1,35 +1,28 @@
 <script>
-  // Import des composants et assets
   import Login from "./Login.svelte";
   import Logo from "../lib/assets/Blablabook.svg?raw";
-  // État pour le chemin courant
+
   let currentPath = $state(window.location.pathname);
-  // État pour afficher la confirmation de déconnexion
   let showLogoutConfirm = $state(false);
-  // État pour afficher le formulaire d'authentification
   let showAuth = $state(false);
-  //Mode d'authentification : login ou register
   let authMode = $state("login");
-  // Token d'utilisateur stocké localement
   let token = $state(localStorage.getItem("token"));
-  // État pour l'ouverture du menu
   let isMenuOpen = $state(false);
-  //Requête de recherche
   let searchQuery = $state("");
-// Callback après succès de connexion
+
   function handleLoginSuccess(newToken) {
     token = newToken;
     showAuth = false;
     isMenuOpen = false;
   }
-// Déconnexion de l'utilisateur
+
   function logout() {
     localStorage.removeItem("token");
     token = null;
     isMenuOpen = false;
     window.location.replace("/");
   }
-//Recherche avec redirection
+
   function search() {
     const q = searchQuery.trim();
     if (!q) return;
@@ -37,23 +30,20 @@
     searchQuery = "";
     window.location.href = `/search?q=${encodeURIComponent(q)}`;
   }
-// Gestion de la touche Entrée dans le champ de recherche
+
   function handleEnter(e) {
     if (e.key === "Enter") search();
   }
 </script>
 
 <header>
-<!-- Navigation principale -->
   <nav class="nav-container">
     <div class="nav-top">
       <a class="logo" href="/">
         {@html Logo}
       </a>
 
-      <!-- Liens desktop (toujours rendus, cachés via CSS sur mobile) -->
       <div class="desktop-nav">
-      <!-- Barre de recherche -->
         <div class="search">
           <input
             type="text"
@@ -63,7 +53,6 @@
             onkeydown={handleEnter}
           />
           <button class="search-btn" onclick={search} aria-label="Rechercher">
-          <!-- Icône loupe -->
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"
@@ -86,7 +75,6 @@
         </div>
 
         {#if !token}
-        <!-- Utilisateur non connecté -->
           <a href="/livres" class="link">Catalogue</a>
           <button
             onclick={() => {
@@ -101,7 +89,6 @@
             }}>Inscription</button
           >
         {:else}
-        <!-- Utilisateur connecté -->
           <a
             href="/livres"
             class="link"
@@ -121,7 +108,7 @@
           >
         {/if}
       </div>
-<!-- Bouton hamburger pour mobile -->
+
       <button
         class="burger-menu"
         class:is-open={isMenuOpen}
@@ -136,14 +123,12 @@
       </button>
     </div>
 
-    <!-- Tiroir mobile -->
     <div
       id="mobile-menu"
       class="mobile-drawer"
       class:is-open={isMenuOpen}
       aria-hidden={!isMenuOpen}
     >
-    <!-- Barre de recherche mobile -->
       <div class="search mobile-search">
         <input
           type="text"
@@ -172,7 +157,6 @@
       </div>
 
       {#if !token}
-      <!-- Menu mobile utilisateur non connecté -->
         <a
           href="/livres"
           class="mobile-link"
@@ -195,7 +179,6 @@
           }}>Inscription</button
         >
       {:else}
-      <!-- Menu mobile utilisateur connecté -->
         <a
           href="/livres"
           class="mobile-link"
@@ -218,25 +201,23 @@
     </div>
   </nav>
 </header>
-<!-- Modal d'authentification (login / inscription) -->
+
 {#if showAuth}
   <div class="overlay" onclick={() => (showAuth = false)} role="none"></div>
   <div class="auth-modal">
     <Login isLogin={authMode === "login"} onSuccess={handleLoginSuccess} />
   </div>
 {/if}
-<!-- Modal de confirmation de déconnexion -->
+
 {#if showLogoutConfirm}
   <div
     class="overlay"
     onclick={() => (showLogoutConfirm = false)}
     role="none"
   ></div>
-  <!-- Contenu du modal de confirmation -->
   <div class="confirm-modal">
     <p>Voulez-vous vraiment vous déconnecter ?</p>
     <div class="confirm-actions">
-    <!-- Des Bouton pour confirmer/annuler la déconnexion -->
       <button class="confirm-cancel" onclick={() => (showLogoutConfirm = false)}
         >Annuler</button
       >
@@ -246,41 +227,6 @@
 {/if}
 
 <style>
-  .confirm-modal {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: var(--color-primary);
-    padding: 2rem;
-    border-radius: 16px;
-    width: 90%;
-    max-width: 340px;
-    z-index: 999;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-    text-align: center;
-  }
-
-  .confirm-modal p {
-    margin: 0 0 1.5rem;
-  }
-
-  .confirm-actions {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-  }
-
-  .confirm-cancel {
-    background: transparent;
-    border: 1px solid var(--color-text);
-  }
-
-  .confirm-logout {
-    background: #c72c3c;
-    color: white;
-  }
-
   header {
     width: 100%;
     background: var(--color-primary);
@@ -317,26 +263,28 @@
     gap: 1rem;
   }
 
+  /* ── Recherche ── */
   .search {
     display: flex;
     align-items: center;
-    background-color: #f4f4f4;
-    border: 1px solid transparent;
+    background: var(--color-white);
+    border: 1px solid var(--color-border);
     border-radius: 50px;
     padding: 2px 6px 2px 18px;
     max-width: 350px;
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-bg) 50%, transparent);
+    box-shadow: 0 0 0 2px var(--color-border-strong);
+    transition:
+      box-shadow var(--transition-base),
+      border-color var(--transition-base);
   }
 
   .search:hover {
-    background-color: white;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--shadow);
   }
 
   .search:focus-within {
     border-color: var(--color-secondary);
-    box-shadow: 0 0 0 4px
-      color-mix(in srgb, var(--color-secondary) 15%, transparent);
+    box-shadow: var(--focus-ring);
   }
 
   .search-input {
@@ -350,12 +298,13 @@
   }
 
   .search-input::placeholder {
-    color: #888;
-    transition: opacity 0.2s;
+    color: var(--color-text);
+    opacity: 0.4;
+    transition: opacity var(--transition-base);
   }
 
   .search-input:focus::placeholder {
-    opacity: 0.5;
+    opacity: 0.2;
   }
 
   .search-btn {
@@ -370,18 +319,21 @@
 
   .search-btn:hover {
     transform: scale(1.05);
-    background-color: var(--color-secondary);
+    background: var(--color-secondary);
+    box-shadow: none;
   }
 
   .search-btn:active {
     transform: scale(0.95);
   }
+
   .mobile-search {
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
   }
 
+  /* ── Liens desktop ── */
   .link {
     position: relative;
     font-family: var(--font-primary);
@@ -389,8 +341,9 @@
     text-decoration: none;
     padding: 0.2rem 0.1rem;
     opacity: 0.75;
-    transition: opacity 0.2s;
+    transition: opacity var(--transition-base);
   }
+
   .link::after {
     content: "";
     position: absolute;
@@ -403,13 +356,13 @@
     transform-origin: left;
     transition: transform 0.25s ease;
   }
+
   .link:hover {
     opacity: 1;
   }
   .link:hover::after {
     transform: scaleX(1);
   }
-
   .link.active {
     opacity: 1;
   }
@@ -417,6 +370,7 @@
     transform: scaleX(1);
   }
 
+  /* ── Burger ── */
   .burger-menu {
     display: none;
     flex-direction: column;
@@ -427,13 +381,14 @@
     padding: 6px;
     background: transparent;
     border: none;
-    border-radius: 6px;
+    border-radius: var(--radius);
     cursor: pointer;
     box-shadow: none;
-    transition: background 0.2s;
+    transition: background var(--transition-base);
   }
+
   .burger-menu:hover {
-    background: color-mix(in srgb, var(--color-text) 8%, transparent);
+    background: var(--color-surface);
     transform: none;
     box-shadow: none;
   }
@@ -444,7 +399,7 @@
     height: 2.5px;
     background: var(--color-text);
     border-radius: 999px;
-    transform-origin: center center;
+    transform-origin: center;
     transition:
       transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
       opacity 0.25s ease;
@@ -461,6 +416,7 @@
     transform: translateY(-7.5px) rotate(-45deg);
   }
 
+  /* ── Tiroir mobile ── */
   .mobile-drawer {
     display: flex;
     flex-direction: column;
@@ -474,12 +430,14 @@
       opacity 0.25s ease,
       padding 0.3s ease;
   }
+
   .mobile-drawer.is-open {
     max-height: 480px;
     opacity: 1;
     padding: 0.75rem 1rem 1.25rem;
-    border-top: 1px solid color-mix(in srgb, var(--color-text) 10%, transparent);
+    border-top: 1px solid var(--color-border);
   }
+
   .mobile-drawer .search-input {
     width: 100%;
     box-sizing: border-box;
@@ -488,19 +446,20 @@
   .mobile-link {
     display: block;
     font-family: var(--font-primary);
-    font-size: 1rem;
+    font-size: var(--font-size-base);
     color: var(--color-text);
     text-decoration: none;
     padding: 0.6rem 0.5rem;
     border-radius: var(--radius);
     opacity: 0.8;
     transition:
-      opacity 0.2s,
-      background 0.2s;
+      opacity var(--transition-base),
+      background var(--transition-base);
   }
+
   .mobile-link:hover {
     opacity: 1;
-    background: color-mix(in srgb, var(--color-text) 6%, transparent);
+    background: var(--color-surface);
   }
 
   .mobile-btn {
@@ -511,26 +470,74 @@
     border-radius: var(--radius);
   }
 
-  /* ── Modale ── */
+  /* ── Overlay ── */
   .overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.65);
+    background: var(--color-overlay);
     backdrop-filter: blur(4px);
     z-index: 998;
   }
-  .auth-modal {
+
+  /* ── Modales ── */
+  .auth-modal,
+  .confirm-modal {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     background: var(--color-primary);
+    border-radius: var(--radius-lg);
+    z-index: 999;
+    box-shadow: var(--shadow-modal);
+  }
+
+  .auth-modal {
     padding: 2.5rem;
-    border-radius: 16px;
     width: 90%;
     max-width: 400px;
-    z-index: 999;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    border-radius: var(--radius-lg);
+  }
+
+  .confirm-modal {
+    padding: 2rem;
+    width: 90%;
+    max-width: 340px;
+    text-align: center;
+  }
+
+  .confirm-modal p {
+    margin: 0 0 1.5rem;
+  }
+
+  .confirm-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+  }
+
+  .confirm-cancel {
+    background: transparent;
+    border: 1px solid var(--color-border-strong);
+    box-shadow: none;
+  }
+
+  .confirm-cancel:hover {
+    background: var(--color-surface);
+    transform: translateY(-1px);
+  }
+
+  .confirm-logout {
+    background: var(--color-danger-hover-bg);
+    border: 1px solid var(--color-danger);
+    color: var(--color-danger-text);
+    box-shadow: none;
+  }
+
+  .confirm-logout:hover {
+    background: var(--color-danger);
+    color: var(--color-text);
+    transform: translateY(-1px);
   }
 
   /* ── Responsive ── */
@@ -549,14 +556,15 @@
       padding: 1.5rem;
     }
     .confirm-modal p {
-      font-size: 1rem;
+      font-size: var(--font-size-base);
     }
     .confirm-cancel,
     .confirm-logout {
-      font-size: 0.9rem;
+      font-size: var(--font-size-sm);
       padding: 0.5rem;
     }
   }
+
   @media (max-width: 700px) {
     .auth-modal {
       padding: 1.2rem;
@@ -566,11 +574,11 @@
       padding: 1rem;
     }
     .confirm-modal p {
-      font-size: 0.9rem;
+      font-size: var(--font-size-sm);
     }
     .confirm-cancel,
     .confirm-logout {
-      font-size: 0.8rem;
+      font-size: var(--font-size-sm);
       padding: 0.5rem;
     }
   }

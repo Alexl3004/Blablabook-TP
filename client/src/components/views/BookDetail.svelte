@@ -336,16 +336,16 @@
   }
 
   .toast.success {
-    background: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
+    background: #1a3a24;
+    color: #6fcf8a;
+    border: 1px solid #2d5c3a;
   }
   .toast.error {
-    background: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
+    background: #3a1a1c;
+    color: #e07070;
+    border: 1px solid #5c2d30;
   }
-/* Animation pour faire apparaître un élément en glissant vers le bas */
+  /* Animation pour faire apparaître un élément en glissant vers le bas */
   @keyframes slideDown {
     from {
       opacity: 0;

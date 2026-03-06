@@ -3,27 +3,23 @@
   import CardBook from "./CardBook.svelte";
   import { api } from "../service/api.service.js";
 
-  // Déclaration des états avec les runes
   let books = $state([]);
   let index = $state(0);
   let visibleCount = $state(5);
-  // Détermine combien de livres afficher selon la largeur de l'écran
+
   function getVisibleCount() {
     if (typeof window === "undefined") return 5;
     const w = window.innerWidth;
-    if (w <= 650) return 1;
-    if (w <= 1000) return 2;
+    if (w <= 780) return 2;
     if (w <= 1300) return 3;
     if (w <= 1550) return 4;
     return 5;
   }
-  // Met à jour le nombre d'éléments visibles
+
   function updateVisibleCount() {
     visibleCount = getVisibleCount();
   }
 
-  // REMPLACEMENT DU $: PAR $derived
-  // Cette variable se mettra à jour automatiquement dès que books, index ou visibleCount changent
   let visibleBooks = $derived(
     books.length > 0
       ? Array.from(
@@ -32,19 +28,19 @@
         )
       : [],
   );
-  // Aller au livre précédent dans le carousel
+
   function prev() {
     if (books.length === 0) return;
     index = (index - 1 + books.length) % books.length;
   }
-  // Aller au livre suivant dans le carousel
+
   function next() {
     if (books.length === 0) return;
     index = (index + 1) % books.length;
   }
 
   let interval;
-  // Récupère des livres ramdom depuis l'API
+
   onMount(async () => {
     try {
       const res = await api.randomBook();
@@ -52,32 +48,25 @@
     } catch (err) {
       console.error("ERREUR API =", err);
     }
-    // Initialise le nombre de livres visibles
     updateVisibleCount();
-    // Met à jour le carousel lors du redimensionnement de l'écran
     window.addEventListener("resize", updateVisibleCount);
-    // Défilement automatique toutes les 5 secondes
     interval = setInterval(next, 5000);
   });
-  // Supprime l'événement resize
+
   onDestroy(() => {
     if (typeof window !== "undefined") {
       window.removeEventListener("resize", updateVisibleCount);
     }
-    // Arrête le défilement automatique
     clearInterval(interval);
   });
 </script>
 
-<!-- Carousel de livres -->
 {#if books.length > 0}
   <section class="carousel-container">
     <div class="carousel-viewport">
-      <!-- Bouton précédent -->
       <button class="arrow prev" onclick={prev} aria-label="Précédent">
         <span>&#10094;</span>
       </button>
-      <!-- Livres visibles -->
       <div class="slides-container">
         {#each visibleBooks as book, i (book.id || index + i)}
           <div class="slide-wrapper">
@@ -85,12 +74,10 @@
           </div>
         {/each}
       </div>
-      <!-- Bouton suivant -->
       <button class="arrow next" onclick={next} aria-label="Suivant">
         <span>&#10095;</span>
       </button>
     </div>
-    <!-- Indicateurs de navigation -->
     <div class="navigation-dots">
       {#each books as _, i}
         <button
@@ -104,7 +91,6 @@
 {/if}
 
 <style>
-  /* Conteneur principal qui englobe tout (carousel + points) */
   .carousel-container {
     display: flex;
     flex-direction: column;
@@ -116,7 +102,6 @@
     box-sizing: border-box;
   }
 
-  /* Zone de visualisation (Flèche - Slides - Flèche) */
   .carousel-viewport {
     display: flex;
     align-items: center;
@@ -126,7 +111,6 @@
     gap: 15px;
   }
 
-  /* Conteneur interne des cartes */
   .slides-container {
     display: flex;
     justify-content: center;
@@ -139,7 +123,6 @@
   .slide-wrapper {
     flex: 0 0 280px;
     width: 280px;
-
     display: flex;
     flex-direction: column;
     transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -150,7 +133,7 @@
     transform: translateY(-10px);
   }
 
-  /* --- FLÈCHES DE NAVIGATION --- */
+  /* ── Flèches ── */
   .arrow {
     background: none;
     box-shadow: none;
@@ -162,8 +145,11 @@
     justify-content: center;
     cursor: pointer;
     font-size: 2.5rem;
-    color: #333;
-    transition: all 0.2s ease;
+    color: var(--color-text);
+    opacity: 0.5;
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease;
     z-index: 10;
     flex-shrink: 0;
     user-select: none;
@@ -171,15 +157,18 @@
   }
 
   .arrow:hover {
-    color: #bbbf49;
+    opacity: 1;
+    color: var(--color-secondary);
     transform: scale(1.2);
+    box-shadow: none;
+    background: none;
   }
 
   .arrow:active {
     transform: scale(0.9);
   }
 
-  /* --- POINTS DE NAVIGATION (DOTS) --- */
+  /* ── Dots ── */
   .navigation-dots {
     display: flex;
     gap: 10px;
@@ -193,24 +182,27 @@
     height: 10px;
     border-radius: 50%;
     border: none;
-    background: #ccc;
+    background: var(--color-border-strong);
     cursor: pointer;
     transition: all 0.3s ease;
     padding: 0;
+    box-shadow: none;
   }
 
   .dot:hover {
-    background: #aaa;
+    background: var(--color-text);
+    opacity: 0.5;
+    transform: none;
+    box-shadow: none;
   }
 
   .dot.active {
-    background: #bbbf49;
+    background: var(--color-secondary);
     border-radius: 10px;
+    box-shadow: none;
   }
 
-  /* --- RESPONSIVE : ADAPTATION DES TAILLES --- */
-
-  /* Tablettes et petits écrans portables */
+  /* ── Responsive ── */
   @media (max-width: 1200px) {
     .slide-wrapper {
       flex: 0 0 240px;
@@ -218,8 +210,7 @@
     }
   }
 
-  /* Mobiles (quand visibleCount passe à 1 ou 2) */
-  @media (max-width: 650px) {
+  @media (max-width: 960px) {
     .arrow {
       font-size: 1.8rem;
       width: 35px;
@@ -230,10 +221,53 @@
     }
 
     .slide-wrapper {
-      /* Sur mobile, la carte prend la place disponible sans dépasser */
       flex: 0 0 100%;
       width: 100%;
-      max-width: 280px;
+      max-width: 220px;
+    }
+  }
+  @media (max-width: 780px) {
+    .arrow {
+      font-size: 1.4rem;
+      width: 35px;
+    }
+
+    .slides-container {
+      gap: 10px;
+    }
+
+    .slide-wrapper {
+      flex: 0 0 100%;
+      width: 100%;
+      max-width: 200px;
+    }
+  }
+
+  @media (max-width: 540px) {
+    .arrow {
+      font-size: 1.2rem;
+    }
+
+    .slides-container {
+      gap: 8px;
+    }
+
+    .slide-wrapper {
+      width: 100%;
+      max-width: 140px;
+    }
+  }
+  @media (max-width: 400px) {
+    .arrow {
+      font-size: 0.6rem;
+    }
+
+    .slides-container {
+      gap: 8px;
+    }
+
+    .slide-wrapper {
+      max-width: 130px;
     }
   }
 </style>
