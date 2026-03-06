@@ -42,13 +42,13 @@
     overflow: hidden;
     height: 100%;
     transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 5px rgba(0, 0, 0, 0.2);
   }
 
   .book-card:hover {
     transform: translateY(-6px);
     border-color: var(--color-secondary);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 10px 10px rgba(0, 0, 0, 0.4);
   }
 
   .card-link {

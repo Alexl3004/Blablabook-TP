@@ -107,7 +107,7 @@
   .title-container {
     display: flex;
     justify-content: center;
-    margin: 2rem 0;
+    margin: 1.5rem 0;
   }
 
   h2 {
@@ -123,7 +123,7 @@
   /* --- FILTRES / SELECTS --- */
   .controls-top {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     gap: 1.5rem;
     margin-bottom: 2.5rem;
     flex-wrap: wrap;
@@ -160,12 +160,10 @@
     border-color: var(--color-secondary);
   }
 
-  /* --- LA GRILLE (Style Collection) --- */
   .grid {
     display: grid;
-    /* Utilisation de la logique Collection */
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    max-width: 1200px; /* Largeur définie pour centrer le contenu */
+    max-width: 1200px;
     margin: 0 auto;
     gap: 1.5rem 1rem;
     padding: 0 20px;
@@ -185,10 +183,9 @@
   /* --- PAGINATION --- */
   .controls-bottom {
     display: flex;
-    justify-content: center;
+    justify-content: space-evenly;
     align-items: center;
-    gap: 2rem;
-    margin-top: 4rem;
+    margin-top: 3rem;
   }
 
   .pagination-btn {
@@ -239,6 +236,24 @@
   }
 
   @media (max-width: 768px) {
+    .controls-top {
+      margin-bottom: 2rem;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      background: var(--color-white);
+      padding: 0.8rem 2rem;
+    }
+    .group {
+      flex-direction: column;
+    }
+    .group label {
+      font-size: 0.8rem;
+    }
+    select {
+      font-size: 0.8rem;
+    }
     .grid {
       max-width: 600px;
       grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -253,13 +268,18 @@
   }
 
   @media (max-width: 480px) {
+    h2 {
+      font-size: 1.6rem;
+      background: var(--color-white);
+      padding: 0.6rem 1.8rem;
+    }
     .grid {
       grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
       max-width: 100%;
       padding: 0 10px;
     }
     .pagination-btn {
-      padding: 0.6rem 1rem;
+      padding: 0.6rem;
       font-size: 0.8rem;
     }
   }
