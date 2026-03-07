@@ -249,7 +249,7 @@
   }
 
   .btn-primary {
-    background: var(--color-secondary);
+    background: var(--color-danger);
     color: var(--color-text);
   }
   .btn-secondary {

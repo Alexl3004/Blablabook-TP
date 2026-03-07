@@ -77,12 +77,14 @@
         {#if !token}
           <a href="/livres" class="link">Catalogue</a>
           <button
+            class="auth-button"
             onclick={() => {
               authMode = "login";
               showAuth = true;
             }}>Connexion</button
           >
           <button
+            class="auth-button"
             onclick={() => {
               authMode = "register";
               showAuth = true;
@@ -104,7 +106,8 @@
             class="link"
             class:active={currentPath === "/profil"}>Mon profil</a
           >
-          <button onclick={() => (showLogoutConfirm = true)}>Déconnexion</button
+          <button class="auth-button" onclick={() => (showLogoutConfirm = true)}
+            >Déconnexion</button
           >
         {/if}
       </div>
@@ -272,7 +275,7 @@
     border-radius: 50px;
     padding: 2px 6px 2px 18px;
     max-width: 350px;
-    box-shadow: 0 0 0 2px var(--color-border-strong);
+    box-shadow: 0 0 0 2px var(--color-border);
     transition:
       box-shadow var(--transition-base),
       border-color var(--transition-base);
@@ -368,6 +371,13 @@
   }
   .link.active::after {
     transform: scaleX(1);
+  }
+  .auth-button {
+    background-color: var(--color-white);
+    border: 2px solid transparent;
+  }
+  .auth-button:hover {
+    border-color: var(--color-secondary);
   }
 
   /* ── Burger ── */
@@ -518,8 +528,7 @@
 
   .confirm-cancel {
     background: transparent;
-    border: 1px solid var(--color-border-strong);
-    box-shadow: none;
+    border: 1px solid var(--color-border);
   }
 
   .confirm-cancel:hover {
@@ -530,13 +539,10 @@
   .confirm-logout {
     background: var(--color-danger-hover-bg);
     border: 1px solid var(--color-danger);
-    color: var(--color-danger-text);
-    box-shadow: none;
   }
 
   .confirm-logout:hover {
     background: var(--color-danger);
-    color: var(--color-text);
     transform: translateY(-1px);
   }
 

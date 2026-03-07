@@ -189,7 +189,7 @@
   }
 
   .pagination-btn {
-    background: var(--color-secondary);
+    background: var(--color-danger);
     color: var(--color-text);
     padding: 0.7rem 1.8rem;
     border-radius: 50px;

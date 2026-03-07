@@ -16,32 +16,32 @@
       <nav class="icons">
         <a href="https://www.instagram.com/" aria-label="Instagram">
           <img
-            width="50"
-            height="50"
+            width="32"
+            height="32"
             src="https://img.icons8.com/doodle/48/instagram-new.png"
             alt="instagram"
           />
         </a>
         <a href="https://www.facebook.com/?locale=fr_FR" aria-label="Facebook">
           <img
-            width="50"
-            height="50"
+            width="32"
+            height="32"
             src="https://img.icons8.com/ios/50/facebook--v1.png"
             alt="facebook"
           />
         </a>
         <a href="https://www.tiktok.com/fr/" aria-label="TikTok">
           <img
-            width="50"
-            height="50"
+            width="32"
+            height="32"
             src="https://img.icons8.com/office/40/tiktok.png"
             alt="tiktok"
           />
         </a>
         <a href="https://x.com/?lang=fr" aria-label="X (Twitter)">
           <img
-            width="50"
-            height="50"
+            width="32"
+            height="32"
             src="https://img.icons8.com/ios/50/twitterx--v1.png"
             alt="twitterx"
           />
@@ -89,17 +89,17 @@
 
 <style>
   footer {
-    margin-top: 5rem;
+    margin-top: 3rem; /* Réduit (était 5rem) */
     width: 100%;
-    font-size: var(--font-size-base);
+    font-size: 0.85rem; /* Réduit (était var(--font-size-base)) */
     background: var(--color-primary);
     box-shadow: var(--shadow);
     border-top: 1px solid var(--color-border);
   }
 
   h3 {
-    font-size: var(--font-size-lg);
-    margin: 0 0 0.5rem;
+    font-size: 0.95rem; /* Réduit (était var(--font-size-lg)) */
+    margin: 0 0 0.4rem;
   }
 
   a {
@@ -116,10 +116,10 @@
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: auto;
-    column-gap: 2rem;
-    row-gap: 1rem;
-    padding: 1rem;
-    margin-top: 2rem;
+    column-gap: 1.5rem; /* Réduit (était 2rem) */
+    row-gap: 0.8rem; /* Réduit (était 1rem) */
+    padding: 0.8rem; /* Réduit (était 1rem) */
+    margin-top: 1rem; /* Réduit (était 2rem) */
   }
 
   .contact {
@@ -130,23 +130,24 @@
   }
   .info__legales {
     grid-area: 1 / 3 / 3 / 6;
-    width: 80%;
+    width: 85%;
   }
   .copyright {
     grid-area: 3 / 1 / 4 / 6;
     text-align: center;
-    margin-top: 1rem;
+    margin-top: 0.8rem;
   }
 
   .copyright p {
     opacity: 0.7;
-    font-size: var(--font-size-sm);
+    font-size: 0.75rem; /* Réduit (était var(--font-size-sm)) */
   }
 
   /* ── Plan de site ── */
   .plan {
     display: flex;
     justify-content: space-around;
+    margin-bottom: 0.5rem;
   }
 
   .plan a {
@@ -160,7 +161,7 @@
     bottom: -2px;
     left: 0;
     right: 0;
-    height: 1.5px;
+    height: 1.2px;
     background: var(--color-secondary);
     transform: scaleX(0);
     transform-origin: left;
@@ -174,7 +175,7 @@
   /* ── Icônes réseaux ── */
   .icons {
     display: flex;
-    gap: 0.75rem;
+    gap: 0.5rem; /* Réduit (était 0.75rem) */
     flex-wrap: wrap;
     align-items: center;
   }
@@ -188,14 +189,14 @@
 
   .icons a:hover {
     opacity: 1;
-    transform: translateY(-2px);
+    transform: translateY(-1px);
   }
 
   /* ── Responsive ── */
   @media screen and (max-width: 900px) {
     .infomations {
       grid-template-columns: repeat(auto-fit, minmax(1rem, 1fr));
-      gap: 1rem;
+      gap: 0.8rem;
     }
     .contact {
       grid-area: 1 / 1 / 2 / 2;
@@ -204,12 +205,12 @@
       grid-area: 2 / 1 / 3 / 2;
       display: flex;
       flex-wrap: wrap;
-      gap: 1rem;
+      gap: 0.8rem;
       align-items: center;
     }
     .info__legales {
       grid-area: 1 / 3 / 3 / 6;
-      margin: 1rem;
+      margin: 0.8rem;
     }
     .copyright {
       grid-area: 3 / 1 / 4 / 6;

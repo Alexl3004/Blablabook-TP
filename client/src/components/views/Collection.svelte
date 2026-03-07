@@ -213,7 +213,7 @@
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     max-width: 1200px;
     margin: 0 auto;
-    gap: 2.5rem 1.2rem; /* Plus d'espace vertical pour les actions */
+    gap: 2.5rem 1.2rem;
     padding: 0 20px;
   }
 
@@ -279,12 +279,16 @@
     color: var(--color-secondary);
     font-weight: 700;
     text-decoration: none;
-    border-bottom: 2px solid transparent;
+    border: 2px solid transparent;
     transition: 0.3s;
+    background-color: var(--color-white);
+    padding: 1rem;
+    border-radius: 50px;
+    box-shadow: var(--shadow);
   }
 
   .browse-link:hover {
-    border-bottom-color: var(--color-secondary);
+    border-color: var(--color-secondary);
   }
 
   .toast {
@@ -342,6 +346,16 @@
       padding: 0.5rem;
       font-size: 0.8rem;
     }
+    h2 {
+      font-size: 1.8rem;
+      padding: 0.8rem 2.5rem;
+    }
+
+    .browse-link {
+      margin-top: 0.8rem;
+      font-size: 1rem;
+      padding: 0.8rem;
+    }
   }
 
   @media (max-width: 700px) {
@@ -359,11 +373,25 @@
       font-size: 0.75rem;
       min-height: 30px;
     }
+    h2 {
+      font-size: 1.6rem;
+      padding: 0.6rem 2rem;
+    }
+    .browse-link {
+      margin-top: 0.6rem;
+      font-size: 0.9rem;
+      font-weight: 700;
+      padding: 0.6rem;
+    }
   }
   @media (max-width: 480px) {
     .grid {
       grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
       max-width: 300px;
+    }
+    h2 {
+      font-size: 1.6rem;
+      padding: 0.5rem 1.8rem;
     }
   }
 </style>
