@@ -1,5 +1,4 @@
 <script>
-  /* On garde ton script tel quel, il fonctionne parfaitement avec Svelte 5 */
   import { api } from "$lib/service/api.service";
   import CardBook from "$lib/components/CardBook.svelte";
 

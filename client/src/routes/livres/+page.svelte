@@ -129,7 +129,7 @@
     display: flex;
     justify-content: space-between;
     gap: 1.5rem;
-    margin-bottom: 2.5rem;
+    margin: 2.5rem;
     flex-wrap: wrap;
   }
 
