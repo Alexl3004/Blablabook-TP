@@ -1,7 +1,9 @@
 <script>
   import { onMount, onDestroy } from "svelte";
   import CardBook from "./CardBook.svelte";
-  import { api } from '$lib/service/api.service.js';
+  import { api } from "$lib/service/api.service.js";
+  import { fly } from "svelte/transition";
+  import { flip } from "svelte/animate";
 
   let books = $state([]);
   let index = $state(0);
@@ -10,10 +12,13 @@
   function getVisibleCount() {
     if (typeof window === "undefined") return 5;
     const w = window.innerWidth;
-    if (w <= 780) return 2;
-    if (w <= 1300) return 3;
-    if (w <= 1550) return 4;
-    return 5;
+    if (w <= 400) return 2;
+    if (w <= 540) return 3;
+    if (w <= 650) return 4;
+    if (w <= 1300) return 5;
+    if (w <= 1550) return 6;
+    if (w <= 1920) return 7;
+    return 8;
   }
 
   function updateVisibleCount() {
@@ -50,7 +55,7 @@
     }
     updateVisibleCount();
     window.addEventListener("resize", updateVisibleCount);
-    interval = setInterval(next, 5000);
+    interval = setInterval(next, 7000);
   });
 
   onDestroy(() => {
@@ -69,7 +74,12 @@
       </button>
       <div class="slides-container">
         {#each visibleBooks as book, i (book.id || index + i)}
-          <div class="slide-wrapper">
+          <div
+            class="slide-wrapper"
+            animate:flip={{ duration: 800 }}
+            in:fly={{ x: 30, duration: 800, delay: i * 30 }}
+            out:fly={{ x: -30, duration: 800 }}
+          >
             <CardBook {book} />
           </div>
         {/each}
@@ -77,15 +87,6 @@
       <button class="arrow next" onclick={next} aria-label="Suivant">
         <span>&#10095;</span>
       </button>
-    </div>
-    <div class="navigation-dots">
-      {#each books as _, i}
-        <button
-          class="dot {i === index ? 'active' : ''}"
-          onclick={() => (index = i)}
-          aria-label="Aller au slide {i + 1}"
-        ></button>
-      {/each}
     </div>
   </section>
 {/if}
@@ -118,15 +119,12 @@
     flex: 1;
     min-width: 0;
     align-items: stretch;
+    padding: 10px 0;
   }
 
   .slide-wrapper {
-    flex: 0 0 280px;
-    width: 280px;
-    display: flex;
-    flex-direction: column;
-    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    will-change: transform;
+    flex: 0 0 200px;
+    width: 200px;
   }
 
   .slide-wrapper:hover {
@@ -168,49 +166,21 @@
     transform: scale(0.9);
   }
 
-  /* ── Dots ── */
-  .navigation-dots {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    justify-content: center;
-    padding: 10px 0;
-  }
-
-  .dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    border: none;
-    background: var(--color-border-strong);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    padding: 0;
-    box-shadow: none;
-  }
-
-  .dot:hover {
-    background: var(--color-text);
-    opacity: 0.5;
-    transform: none;
-    box-shadow: none;
-  }
-
-  .dot.active {
-    background: var(--color-secondary);
-    border-radius: 10px;
-    box-shadow: none;
-  }
-
   /* ── Responsive ── */
-  @media (max-width: 1200px) {
+  @media (max-width: 1650px) {
     .slide-wrapper {
-      flex: 0 0 240px;
-      width: 240px;
+      flex: 0 0 180px;
+      width: 180px;
+    }
+  }
+  @media (max-width: 1100px) {
+    .slide-wrapper {
+      flex: 0 0 160px;
+      width: 160px;
     }
   }
 
-  @media (max-width: 960px) {
+  @media (max-width: 980px) {
     .arrow {
       font-size: 1.8rem;
       width: 35px;
@@ -221,12 +191,12 @@
     }
 
     .slide-wrapper {
-      flex: 0 0 100%;
+      flex: 0 0 140px;
       width: 100%;
-      max-width: 220px;
+      max-width: 140px;
     }
   }
-  @media (max-width: 780px) {
+  @media (max-width: 820px) {
     .arrow {
       font-size: 1.4rem;
       width: 35px;
@@ -237,13 +207,13 @@
     }
 
     .slide-wrapper {
-      flex: 0 0 100%;
+      flex: 0 0 120px;
       width: 100%;
-      max-width: 200px;
+      max-width: 120px;
     }
   }
 
-  @media (max-width: 540px) {
+  @media (max-width: 720px) {
     .arrow {
       font-size: 1.2rem;
     }
@@ -253,21 +223,23 @@
     }
 
     .slide-wrapper {
-      width: 100%;
-      max-width: 140px;
+      max-width: 100px;
+    }
+  }
+  @media (max-width: 480px) {
+    .arrow {
+      font-size: 0.8rem;
+    }
+    .slide-wrapper {
+      max-width: 100px;
     }
   }
   @media (max-width: 400px) {
     .arrow {
-      font-size: 0.6rem;
+      font-size: 0.8rem;
     }
-
-    .slides-container {
-      gap: 8px;
-    }
-
     .slide-wrapper {
-      max-width: 130px;
+      max-width: 120px;
     }
   }
 </style>

@@ -29,7 +29,7 @@
 
     <div class="card-content">
       <h3 title={book.title}>{book.title}</h3>
-      <p class="author"><span>par</span> {book.author}</p>
+      <p class="author">{book.author}</p>
     </div>
   </a>
 </article>
@@ -131,12 +131,6 @@
     width: 100%;
   }
 
-  .author span {
-    font-size: 0.75rem;
-    font-style: italic;
-    opacity: 0.5;
-  }
-
   .skeleton {
     position: absolute;
     inset: 0;
@@ -156,15 +150,65 @@
     }
   }
 
-  @media (max-width: 480px) {
-    .card-content {
-      padding: 0.5rem;
-    }
+  @media (max-width: 1024px) {
     h3 {
       font-size: 0.9rem;
     }
     .author {
+      font-size: 0.8rem;
+    }
+  }
+
+  /* Petites tablettes / Grands téléphones (ex: 768px) */
+  @media (max-width: 768px) {
+    .card-content {
+      padding: 0.6rem 0.5rem;
+    }
+    h3 {
+      font-size: 0.8rem;
+    }
+    .author {
       font-size: 0.75rem;
+    }
+    .year-badge {
+      font-size: 0.6rem;
+      padding: 1px 5px;
+    }
+  }
+
+  /* Téléphones standards (ex: 600px) */
+  @media (max-width: 600px) {
+    .book-card {
+      border-radius: 8px;
+    }
+    h3 {
+      font-size: 0.75rem;
+    }
+    .author {
+      font-size: 0.65rem;
+    }
+  }
+
+  /* Très petits écrans (ex: 420px) */
+  @media (max-width: 420px) {
+    .card-content {
+      padding: 0.4rem;
+      gap: 0px;
+    }
+    h3 {
+      font-size: 0.65rem;
+    }
+    .author {
+      font-size: 0.55rem;
+    }
+  }
+
+  @media (max-width: 340px) {
+    h3 {
+      font-size: 0.6rem;
+    }
+    .author {
+      font-size: 0.5rem;
     }
   }
 </style>
