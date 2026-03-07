@@ -13,8 +13,14 @@
     <section class="welcome">
       <h1>Bienvenue sur <span>BlaBlaBook</span></h1>
       <div class="welcome-text">
-        <p>Découvrez de nouveaux livres...</p>
-        <p>Créez un compte ou connectez‑vous...</p>
+        <p>
+          Découvrez de nouveaux livres, explorez des univers variés et trouvez
+          votre prochaine lecture en un instant.
+        </p>
+        <p>
+          Créez un compte ou connectez‑vous pour accéder à votre espace
+          personnel.
+        </p>
       </div>
     </section>
 
