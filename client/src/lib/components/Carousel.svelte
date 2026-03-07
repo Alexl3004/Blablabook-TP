@@ -1,7 +1,7 @@
 <script>
   import { onMount, onDestroy } from "svelte";
   import CardBook from "./CardBook.svelte";
-  import { api } from "../service/api.service.js";
+  import { api } from '$lib/service/api.service.js';
 
   let books = $state([]);
   let index = $state(0);

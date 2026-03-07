@@ -1,13 +1,8 @@
 FROM node:24-alpine
-
 WORKDIR /app
-
-COPY package.json package-lock.json ./
-
-RUN npm i
-
+COPY package.json svelte.config.js ./
+RUN npm install --ignore-scripts
 COPY . .
-
+RUN npx svelte-kit sync
 EXPOSE 5173
-
-CMD ["npm", "run", "dev", "--", "--host"]
+CMD sh -c "npx svelte-kit sync && npm run dev -- --host"

@@ -1,6 +1,6 @@
 <script>
-  import { api } from "../../service/api.service.js";
-  import CardBook from "../CardBook.svelte";
+  import { api } from "$lib/service/api.service";
+  import CardBook from "$lib/components/CardBook.svelte";
 
   let books = $state([]);
   let currentPage = $state(1);
@@ -32,6 +32,10 @@
     currentPage = 1;
   }
 </script>
+
+<svelte:head>
+  <title>Catalogue / Blablabook</title>
+</svelte:head>
 
 <section aria-labelledby="catalogue-title">
   <div class="title-container">

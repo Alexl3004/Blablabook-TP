@@ -1,5 +1,5 @@
 <script>
-  import { api } from "../service/api.service.js";
+  import { api } from "$lib/service/api.service";
 
   export let isLogin = true;
   export let onSuccess;

@@ -1,7 +1,7 @@
 <script>
   /* On garde ton script tel quel, il fonctionne parfaitement avec Svelte 5 */
-  import { api } from "../../service/api.service.js";
-  import CardBook from "../CardBook.svelte";
+  import { api } from "$lib/service/api.service";
+  import CardBook from "$lib/components/CardBook.svelte";
 
   let books = $state([]);
   let loading = $state(true);
@@ -86,6 +86,9 @@
   }
 </script>
 
+<svelte:head>
+  <title>Collection / Blablabook</title>
+</svelte:head>
 <section aria-labelledby="collection-title">
   <div class="title-container">
     <h2 id="collection-title">Ma collection</h2>

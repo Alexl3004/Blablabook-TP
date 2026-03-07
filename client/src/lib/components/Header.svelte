@@ -1,12 +1,15 @@
 <script>
+  import { browser } from "$app/environment";
+  import { goto } from "$app/navigation";
+  import { page } from "$app/stores";
   import Login from "./Login.svelte";
-  import Logo from "../lib/assets/Blablabook.svg?raw";
+  import Logo from "$lib/assets/Blablabook.svg?raw";
 
-  let currentPath = $state(window.location.pathname);
+  let currentPath = $derived($page.url.pathname);
   let showLogoutConfirm = $state(false);
   let showAuth = $state(false);
   let authMode = $state("login");
-  let token = $state(localStorage.getItem("token"));
+  let token = $state(browser ? localStorage.getItem("token") : null);
   let isMenuOpen = $state(false);
   let searchQuery = $state("");
 
@@ -20,7 +23,7 @@
     localStorage.removeItem("token");
     token = null;
     isMenuOpen = false;
-    window.location.replace("/");
+    goto("/");
   }
 
   function search() {
@@ -28,7 +31,7 @@
     if (!q) return;
     isMenuOpen = false;
     searchQuery = "";
-    window.location.href = `/search?q=${encodeURIComponent(q)}`;
+    goto(`/search?q=${encodeURIComponent(q)}`);
   }
 
   function handleEnter(e) {
@@ -249,16 +252,19 @@
     padding: 0 1rem;
   }
 
-  /* ── Logo ── */
   .logo :global(svg) {
-    height: 60px;
+    height: 38px;
     width: auto;
-    display: block;
-  }
-  .logo :global(svg path) {
-    fill: var(--color-text);
   }
 
+  .logo :global(svg path) {
+    fill: var(--color-secondary); 
+    transition: fill var(--transition-base);
+  }
+
+  .logo:hover :global(svg path) {
+    fill: var(--color-danger); 
+  }
   /* ── Desktop nav ── */
   .desktop-nav {
     display: flex;

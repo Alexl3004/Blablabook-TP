@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import { api } from "../../service/api.service.js";
+  import { api } from "$lib/service/api.service";
 
   let user = null,
     loading = true,
@@ -243,6 +243,9 @@
   }
 </script>
 
+<svelte:head>
+  <title>Mon profil / Blablabook</title>
+</svelte:head>
 <svelte:window on:keydown={handleKeydown} />
 
 {#snippet eyeIcon(visible)}

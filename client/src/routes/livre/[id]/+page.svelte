@@ -1,10 +1,12 @@
 <script>
   import { onMount } from "svelte";
-  import { api } from "../../service/api.service.js";
+  import { page } from "$app/stores";
+  import { api } from "$lib/service/api.service";
 
   let token =
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
-  const { params } = $props();
+
+  let id = $derived($page.params.id);
 
   let book = $state(null);
   let loading = $state(true);
@@ -34,7 +36,7 @@
   async function loadBook() {
     try {
       loading = true;
-      book = await api.getBook(params.id);
+      book = await api.getBook(id);
     } catch (error) {
       showToast("Erreur de chargement", "error");
     } finally {
@@ -46,10 +48,10 @@
     try {
       checkingCollection = true;
       const data = await api.getCollection();
-      const found = data.books?.find((b) => b.id === parseInt(params.id));
+      const found = data.books?.find((b) => String(b.id) === String(id));
       if (found) {
         collectionStatus = found.collectStatus;
-        selectedStatus = found.collectStatus; // Synchronise le select
+        selectedStatus = found.collectStatus;
       }
     } catch (error) {
       console.error("Vérification collection échouée");
@@ -95,7 +97,15 @@
       toast = null;
     }, 3000);
   }
+
+  let pageTitle = $derived(
+    book ? `${book.title} | Blablabook` : "Chargement... | Blablabook",
+  );
 </script>
+
+<svelte:head>
+  <title>{book?.title} / Blablabook</title>
+</svelte:head>
 
 <main>
   <section aria-busy={loading}>
@@ -393,7 +403,7 @@
     button {
       padding: 0.4rem 0.8rem;
       font-size: 0.85rem;
-      height: 36px; 
+      height: 36px;
     }
 
     select {

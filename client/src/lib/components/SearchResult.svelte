@@ -1,6 +1,6 @@
 <script>
-  import { api } from "../../service/api.service.js";
-  import CardBook from "../CardBook.svelte";
+  import { api } from "$lib/service/api.service";
+  import CardBook from "./CardBook.svelte";
 
   // Liste des livres trouvés
   let books = $state([]);
