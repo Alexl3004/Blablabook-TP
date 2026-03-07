@@ -1,6 +1,6 @@
 <script>
   import { browser } from "$app/environment";
-  import { goto } from "$app/navigation";
+  import { goto, invalidateAll } from "$app/navigation";
   import { page } from "$app/stores";
   import Login from "./Login.svelte";
   import Logo from "$lib/assets/Blablabook.svg?raw";
@@ -23,15 +23,17 @@
     localStorage.removeItem("token");
     token = null;
     isMenuOpen = false;
-    goto("/");
+    showLogoutConfirm = false;
+    window.location.href = "/";
   }
 
   function search() {
     const q = searchQuery.trim();
     if (!q) return;
     isMenuOpen = false;
+    const targetUrl = `/search?q=${encodeURIComponent(q)}`;
     searchQuery = "";
-    goto(`/search?q=${encodeURIComponent(q)}`);
+    goto(targetUrl, { invalidateAll: true });
   }
 
   function handleEnter(e) {
@@ -258,12 +260,12 @@
   }
 
   .logo :global(svg path) {
-    fill: var(--color-secondary); 
+    fill: var(--color-secondary);
     transition: fill var(--transition-base);
   }
 
   .logo:hover :global(svg path) {
-    fill: var(--color-danger); 
+    fill: var(--color-danger);
   }
   /* ── Desktop nav ── */
   .desktop-nav {
@@ -580,7 +582,7 @@
   @media (max-width: 700px) {
     .auth-modal {
       padding: 1.2rem;
-      width: 90%;
+      width: 60%;
     }
     .confirm-modal {
       padding: 1rem;

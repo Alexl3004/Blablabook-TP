@@ -1,26 +1,26 @@
 <script>
   import { api } from "$lib/service/api.service";
   import CardBook from "$lib/components/CardBook.svelte";
+  import { page } from "$app/stores"; 
 
-  // Liste des livres trouvés
   let books = $state([]);
   let loading = $state(false);
-  // Terme de recherche
   let query = $state("");
 
-  // Récupère la requête dans l'URL et lance la recherche
+  const currentQuery = $derived($page.url.searchParams.get("q") || "");
+
   $effect(() => {
-    const params = new URLSearchParams(window.location.search);
-    query = params.get("q") || "";
+    query = currentQuery;
     if (query) {
       fetchBooks();
+    } else {
+      books = [];
     }
   });
 
-  // Appelle l'API pour chercher des livres
   async function fetchBooks() {
+    loading = true;
     try {
-      loading = true;
       const data = await api.search(query);
       books = data || [];
     } catch (err) {
@@ -33,7 +33,7 @@
 </script>
 
 <svelte:head>
-  <title>{query} / Blablabook</title>
+  <title>{query} Blablabook</title>
 </svelte:head>
 <section aria-labelledby="search-title">
   <div class="title-container">

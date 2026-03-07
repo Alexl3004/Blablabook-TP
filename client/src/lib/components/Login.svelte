@@ -1,6 +1,6 @@
 <script>
   import { api } from "$lib/service/api.service";
-
+  import { onDestroy } from "svelte";
   export let isLogin = true;
   export let onSuccess;
 
@@ -26,6 +26,10 @@
       toast = null;
     }, 3000);
   }
+  
+  onDestroy(() => {
+    if (toastTimeout) clearTimeout(toastTimeout);
+  });
 
   const errorMessages = {
     Conflict: "Les informations saisies sont invalides.",

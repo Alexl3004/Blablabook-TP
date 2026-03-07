@@ -104,7 +104,7 @@
   }
 
   h2 {
-    font-size: 1.8rem;
+    font-size: 1.6rem;
     background: var(--color-white);
     padding: 0.8rem 2rem;
     border-radius: 50px;
@@ -147,34 +147,37 @@
     .welcome {
       padding: 2rem 1.5rem;
     }
-    h1 {
-      font-size: 1.8rem !important;
+    .welcome-text p {
+      line-height: 1.5;
+    }
+    .welcome h1 {
+      font-size: 1.6rem ;
     }
     h2 {
-      font-size: 1.5rem !important;
+      font-size: 1.4rem ;
     }
-    .feature-card h3 {
+    h3 {
       font-size: 1rem;
     }
-    .feature-card p {
+    p {
       font-size: 0.8rem;
     }
   }
 
   @media (max-width: 600px) {
     .welcome {
-      margin: 1rem;
-      border-radius: 16px;
-    }
-    .welcome h1 {
-      font-size: 1.5rem !important;
+      margin: 0.8rem;
+      padding: 1rem;
     }
     .welcome-text p {
-      font-size: 1rem;
+      line-height: 1.3;
+    }
+    .welcome h1 {
+      font-size: 1.3rem ;
     }
 
     h2 {
-      font-size: 1.3rem !important;
+      font-size: 1rem ;
       padding: 0.6rem 1.5rem;
     }
 
@@ -189,7 +192,7 @@
     .feature-card h3 {
       font-size: 1rem;
     }
-    .feature-card p {
+    .welcome-text p {
       font-size: 0.8rem;
     }
   }
