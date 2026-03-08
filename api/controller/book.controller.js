@@ -48,7 +48,7 @@ export const bookController = {
   },
   // Retourne une liste aléatoire de livres
   async randomList(req, res) {
-    const limitCount = 10;
+    const limitCount = 20;
     const random = await Book.findAll({
       order: [sequelize.random()], // Tirage aléatoire
       limit: limitCount,
