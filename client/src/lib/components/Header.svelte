@@ -239,6 +239,7 @@
     width: 100%;
     background: var(--color-primary);
     box-shadow: var(--shadow);
+    border-bottom: 1px solid var(--color-border);
     padding: 1rem 0;
   }
 
