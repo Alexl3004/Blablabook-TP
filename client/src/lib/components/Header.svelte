@@ -1,6 +1,6 @@
 <script>
   import { browser } from "$app/environment";
-  import { goto, invalidateAll } from "$app/navigation";
+  import { goto } from "$app/navigation";
   import { page } from "$app/stores";
   import Login from "./Login.svelte";
   import Logo from "$lib/assets/Blablabook.svg?raw";

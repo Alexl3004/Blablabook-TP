@@ -77,6 +77,21 @@
     clearInterval(interval);
   }
 
+  let touchStartX = 0;
+  let touchEndX = 0;
+
+  function onTouchStart(e) {
+    touchStartX = e.changedTouches[0].screenX;
+  }
+
+  function onTouchEnd(e) {
+    touchEndX = e.changedTouches[0].screenX;
+    const diff = touchStartX - touchEndX;
+    if (Math.abs(diff) > 40) {
+      diff > 0 ? next() : prev();
+    }
+  }
+
   onMount(async () => {
     try {
       const res = await api.randomBook();
@@ -103,6 +118,8 @@
     aria-label="Carousel de livres"
     onmouseenter={stopInterval}
     onmouseleave={startInterval}
+    ontouchstart={onTouchStart}
+    ontouchend={onTouchEnd}
   >
     <div class="carousel-viewport">
       <div class="slides-container">
