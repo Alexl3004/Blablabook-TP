@@ -26,8 +26,8 @@
   let visibleBooks = $derived(
     books.length > 0
       ? Array.from(
-          { length: visibleCount },
-          (_, i) => books[(index + i) % books.length],
+          { length: Math.min(visibleCount, books.length) }, // ← ici
+          (_, i) => ({ ...books[(index + i) % books.length], _slot: i }),
         )
       : [],
   );
@@ -123,7 +123,7 @@
   >
     <div class="carousel-viewport">
       <div class="slides-container">
-        {#each visibleBooks as book, i (book.id || index + i)}
+        {#each visibleBooks as book, i (book._slot)}
           <div
             class="slide-wrapper"
             animate:flip={{ duration: 500, easing: cubicOut }}
