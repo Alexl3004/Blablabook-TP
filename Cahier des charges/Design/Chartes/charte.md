@@ -1,24 +1,19 @@
-# Blablabook
+# Charte BlaBlaBook
 
-## Présentation
+## Concept
 
-**BlaBlaBook** est une association fictive de passionnés de lecture proposant une plateforme en ligne de gestion de bibliothèque personnelle.
+Association de lecteurs et plateforme de gestion de bibliothèque.
 
-Destinée à tous les lecteurs, débutants comme confirmés, elle permet :
-- d’organiser ses livres
-- de découvrir de nouvelles lectures  
-- de partager ses avis  
+## Couleurs
 
-## Palette colorielle
+| Élément               | Code Hex  |
+| :-------------------- | :-------- |
+| **Fond**              | `#221e2c` |
+| **Cartes / Blocs**    | `#18161f` |
+| **Accents / Boutons** | `#8f2c1b` |
+| **Texte**             | `#e9e4db` |
+| **Détails sombres**   | `#1c1a24` |
 
-|      Couleur     | Code Hex  |
-|------------------|-----------|
-|  coleur text     | `#592F25` |
-|couleur secondaire| `#bbbf49` |
-|   couleur rose   | `#F2CEAE` |
-| couleur primaire | `#eeeddc` |
-| couleur blanche  | `#FFFFFA` |
+## Typographie
 
-## Police
-
-**Beautifully Delicious**
+**Police :** Montserrat
