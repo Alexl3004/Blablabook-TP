@@ -1,83 +1,51 @@
 name: BlablaBook
 services:
-  # nom du service
   api:
-    # construction de notre image
     build:
-      # à partir du répertoire ./api
       context: ./api
-      # on utilise le fichier Dockerfile.api
-      dockerfile: Dockerfile.api
-    # on expose le port 3000 du conteneur sur notre port 3000
     ports:
       - 3000:3000
-    # le service api dépend du service db
     depends_on:
       - db
-    # on nomme le conteneur parce qu'on fait les choses proprement
     container_name: blablabook-api
     env_file:
       - .docker.env
-    # docker compose watch
     develop:
       watch:
-        # sync : synchronise les fichiers sans redémarrer le conteneur
         - action: sync
           path: ./api
           target: /app
           ignore:
             - node_modules/
-        # rebuild : reconstruit l'image si package.json change
         - action: rebuild
           path: ./api/package.json
-
-  # nom du service
   client:
-    # construction de l'image du service
     build:
-      # à partir du répertoire ./client
       context: ./client
-      # on utilise le fichier Dockerfile.client
       dockerfile: Dockerfile.client
-    # on expose le port 5173 du conteneur sur notre port 5173
     ports:
       - 5173:5173
-    # notre service ne démarre que quand le service api est prêt
     depends_on:
       - api
-    # on nomme notre conteneur pour savoir qui il est
     container_name: blablabook-client
     env_file:
       - .docker.env
-    # docker compose watch
     develop:
       watch:
-        # sync : synchronise les fichiers sans redémarrer le conteneur
         - action: sync
           path: ./client
           target: /app
           ignore:
             - node_modules/
-        # rebuild : reconstruit l'image si package.json change
         - action: rebuild
           path: ./client/package.json
-
-  # nom du service
   db:
-    # on utilise l'image postgres
     image: postgres:18-alpine
-    # nom du conteneur
     container_name: blablabook-database
-    # environnement : on déclare les infos nécessaires à notre BDD
     env_file:
       - .docker.env
-    # on monte les volumes
     volumes:
-      # répertoire des scripts d'initialisation
       - ./api/data:/docker-entrypoint-initdb.d
-      # volume de persistance des données
       - pg-blablabook:/var/lib/postgresql/data
-
-# ne pas oublier les volumes de persistance utilisés
 volumes:
   pg-blablabook:
