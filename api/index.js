@@ -24,9 +24,13 @@ app.use(notFoundHandler);
 // Gestionnaire d'erreurs (doit être en dernier)
 app.use(errorHandler);
 
+// Vercel utilise cet export (l'app tourne comme une fonction)
 export default app;
 
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(` Api is listening on http://localhost:${port}`);
-});
+// En local / Docker / Render : on écoute un port. Sur Vercel : inutile.
+if (!process.env.VERCEL) {
+  const port = process.env.PORT || 3000;
+  app.listen(port, () => {
+    console.log(`Api is listening on http://localhost:${port}`);
+  });
+}
